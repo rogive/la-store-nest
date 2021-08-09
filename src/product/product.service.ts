@@ -21,9 +21,11 @@ export class ProductService {
     return product;
   }
 
-  async getProductByName(name: string): Promise<Product> {
-    const product = await this.ProductModel.findOne({ name: name });
-    return product;
+  async getProductsByTags(tags: string[]): Promise<Product[]> {
+    const products = await this.ProductModel.find({
+      tags: { $in: [...tags] },
+    });
+    return products;
   }
 
   async create(productDTO: ProductDTO): Promise<Product> {

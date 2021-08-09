@@ -8,6 +8,7 @@ import {
   Get,
   Put,
   Delete,
+  Query,
   NotFoundException,
 } from '@nestjs/common';
 
@@ -18,19 +19,18 @@ import { ProductService } from './product.service';
 export class ProductController {
   constructor(private productService: ProductService) {}
 
-  @Post('/')
-  async create(@Res() res, @Body() body: ProductDTO) {
-    const product = await this.productService.create(body);
-
-    return res.status(HttpStatus.OK).json({
-      message: 'Product created succesfully',
-      product,
-    });
-  }
-
   @Get('/list')
   async getProducts(@Res() res) {
     const products = await this.productService.getProducts();
+    return res.status(HttpStatus.OK).json({
+      message: 'successful',
+      products,
+    });
+  }
+
+  @Get('/listbytags')
+  async getProductsByTags(@Res() res, @Query('tags') tags) {
+    const products = await this.productService.getProductsByTags(tags);
     return res.status(HttpStatus.OK).json({
       message: 'successful',
       products,
@@ -43,6 +43,16 @@ export class ProductController {
     if (!product) throw new NotFoundException('Product not found');
     return res.status(HttpStatus.OK).json({
       message: 'successful',
+      product,
+    });
+  }
+
+  @Post('/')
+  async create(@Res() res, @Body() body: ProductDTO) {
+    const product = await this.productService.create(body);
+
+    return res.status(HttpStatus.OK).json({
+      message: 'Product created succesfully',
       product,
     });
   }
