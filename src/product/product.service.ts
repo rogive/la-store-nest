@@ -22,8 +22,10 @@ export class ProductService {
   }
 
   async getProductsByTags(tags: string[]): Promise<Product[]> {
+    let newTags = Array.isArray(tags) ? tags : [tags];
+    newTags = newTags.map((tag) => tag.toLowerCase());
     const products = await this.ProductModel.find({
-      tags: { $in: [...tags] },
+      tags: { $in: newTags },
     });
     return products;
   }
